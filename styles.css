@@ -1,0 +1,338 @@
+/* Genel sayfa arka plan rengi */
+body {
+  background: #1a1a1a; /* Koyu siyah zemin */
+  background-image: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.2) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(0, 0, 0, 0.2) 75%,
+      rgba(0, 0, 0, 0.2)
+    ),
+    linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.2) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(0, 0, 0, 0.2) 75%,
+      rgba(0, 0, 0, 0.2)
+    );
+  background-size: 20px 20px; /* Çizgilerin boyutu */
+  background-position: 0 0, 10px 10px;
+}
+
+/* 3D efekti sağlayacak ana kutu */
+.wrap {
+  perspective: 1200px; /* 3D görünüm için uzaklık mesafesi */
+  perspective-origin: 50% 100px; /* Perspektifin merkez noktası */
+  width: 300px;
+  position: absolute; /* Yerleşim için mutlak pozisyon */
+  left: 50%; /* Ekranın ortasına yerleştirir */
+  top: 65%;
+  transform: translate(-50%, -50%); /* Konumu tam olarak merkezler */
+}
+
+/* 3D dönme etkisi uygulanan player (oyuncu) kutusu */
+.wrap .player {
+  position: relative;
+  width: 300px;
+  transform-style: preserve-3d; /* 3D dönüşümün korunması */
+  transform: rotateX(-30deg) rotateY(60deg); /* X ve Y eksenlerinde dönüşüm */
+}
+
+/* Player'ın her bir alt kısmı için stil */
+.wrap .player > div {
+  position: absolute; /* Konumlandırma */
+  width: 300px;
+  height: 300px;
+  box-sizing: border-box; /* Boyut hesaplaması içerik ve kenarlıkları dahil eder */
+  border-radius: 5px; /* Yuvarlatılmış köşeler */
+}
+
+/* Player'ın sol kısmı */
+.wrap .player > div.left {
+  height: 120px;
+  border-bottom: 60px solid #666; /* Alt kenar rengi ve boyutu */
+  border-right: 1px solid #ccc; /* Sağ kenar sınırı */
+  border-left: 1px solid #ccc; /* Sol kenar sınırı */
+  border-top-left-radius: 0; /* Sol üst köşe yuvarlatılmaz */
+  background: rgba(255, 255, 255, 0.1); /* Hafif opak beyaz arka plan */
+  transform: rotateY(270deg) translateX(-150px); /* 3D dönüşüm ve konum kayması */
+  transform-origin: center left; /* Dönüşüm merkezi */
+}
+
+/* Player'ın sol kısmındaki düğmeler */
+.wrap .player > div.left .buttons {
+  width: 90%;
+  height: 20%;
+  margin: 0 auto;
+  position: absolute;
+  bottom: -60%; /* Alt kısmın dışında yerleştirir */
+  left: 50%;
+  transform: translateX(-50%); /* Ortalar */
+}
+
+/* Düğmelerin stili */
+.wrap .player > div.left .buttons div {
+  width: 30px;
+  height: 15px;
+  background: #333; /* Düğme arka plan rengi */
+  border-radius: 15px; /* Yuvarlatılmış köşeler */
+  display: inline-block; /* Satır içi blok */
+  box-shadow: 4px 0 0 0 #222; /* Düğmelere gölge efekti */
+  float: right; /* Sağda hizalar */
+  margin-left: 10px; /* Aralarına boşluk ekler */
+}
+
+/* Player'ın ön kısmı */
+.wrap .player > div.front {
+  height: 120px;
+  border-bottom: 60px solid #666;
+  border-right: 1px solid #ccc;
+  background: rgba(255, 255, 255, 0.1); /* Hafif opak arka plan */
+  transform: translateZ(150px); /* Z ekseninde hareket ettirir */
+}
+
+/* Player'ın üst kısmı */
+.wrap .player > div.top {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #ccc;
+  transform: rotateX(-90deg) translateY(-150px); /* 3D dönüşüm */
+  transform-origin: top center; /* Dönüşüm merkezi */
+}
+
+/* Player'ın alt kısmı */
+.wrap .player > div.bottom {
+  background: #444;
+  transform: rotateX(90deg) translateY(150px) translateZ(240px); /* 3D dönüşüm */
+  transform-origin: bottom center; /* Dönüşüm merkezi */
+  position: relative;
+}
+
+/* Alt kısmın yuvarlak efekti */
+.wrap .player > div.bottom:after {
+  content: "";
+  display: block;
+  width: 240px;
+  height: 240px;
+  border-radius: 100%; /* Yuvarlak şekil */
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  box-shadow: -10px 5px 0 0 #111; /* Gölgeleme efekti */
+  transform: translate3d(50%, -50%, 0);
+}
+
+/* Player'ın disk efekti */
+.wrap .player > div .disc {
+  width: 240px;
+  height: 240px;
+  background: #000; /* Siyah arka plan */
+  border-radius: 100%; /* Yuvarlak şekil */
+  transform: translate(-50%, -50%); /* Ortalar */
+  backface-visibility: hidden; /* Arka tarafın görünmesini engeller */
+  perspective: 10000; /* 3D perspektif */
+  margin: 50%; /* Yarı çapta ortalar */
+  position: absolute;
+  z-index: 2;
+  overflow: hidden; /* Taşan alanı gizler */
+  animation: rotateDisc 20s ease-in-out infinite; /* Döndürme animasyonu */
+}
+
+/* Diskin iç kısmındaki küçük yuvarlak şekiller */
+.wrap .player > div .disc:before,
+.wrap .player > div .disc:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%; /* Yuvarlak şekil */
+  border: 1px solid #111; /* Sınır rengi */
+}
+
+.wrap .player > div .disc:before {
+  width: 80%;
+  height: 80%;
+}
+
+.wrap .player > div .disc:after {
+  width: 60%;
+  height: 60%;
+}
+
+/* Işık efekti */
+.wrap .player > div .light {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Arka planda */
+}
+
+/* Işık kısmının üst kısmı */
+.wrap .player > div .light:before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 15px 100px 15px;
+  border-color: transparent transparent rgba(50, 50, 50, 0.1) transparent;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Işık kısmının alt kısmı */
+.wrap .player > div .light:after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 100px 15px 0 15px;
+  border-color: rgba(50, 50, 50, 0.1) transparent transparent transparent;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Etiket kısmı */
+.wrap .player > div .label {
+  width: 40%;
+  height: 40%;
+  background: #9e6908; /* Arka plan rengi */
+  border-radius: 100%; /* Yuvarlak şekil */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Ortalar */
+  color: #ccc; /* Yazı rengi */
+  text-align: center; /* Ortalanmış yazı */
+  z-index: 2; /* Üst katmanda */
+}
+
+/* Etiketin iç kısmındaki küçük yuvarlaklar */
+.wrap .player > div .label:before,
+.wrap .player > div .label:after {
+  content: " ";
+  border-radius: 100%; /* Yuvarlak şekil */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.wrap .player > div .label:before {
+  width: 100%;
+  height: 100%;
+  border: 5px solid #089e1e; /* Yeşil sınır */
+}
+
+.wrap .player > div .label:after {
+  width: 90%;
+  height: 90%;
+  border: 5px solid #fffb00; /* Sarı sınır */
+  box-shadow: 0 0 0px 5px #fc031c inset; /* İç kenarda kırmızı gölge */
+}
+
+/* Etiket metni */
+.wrap .player > div .label .text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3; /* Üst katmanda */
+}
+
+/* Etiketin ortasında küçük nokta */
+.wrap .player > div .label .text:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+  background: #333;
+  width: 4.5px;
+  height: 4.5px;
+}
+
+/* Etiket metninin stilini belirler */
+.wrap .player > div .label span {
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 10px; /* Küçük yazı tipi */
+  display: inline-block;
+  height: 30px;
+  position: absolute;
+  top: 20%; /* Yükseklik kayması */
+  transform-origin: bottom center;
+  transform: rotate(18deg); /* Dönme efekti */
+}
+
+/* Player'ın sağ alt köşesindeki yuvarlak düğme */
+.wrap .player > div .op {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  background: #333;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  box-shadow: -7px 3px 0 0 #222; /* Gölgeleme efekti */
+}
+
+/* Player'ın kolu */
+.wrap .player > div .handle {
+  width: 700%;
+  height: 50%;
+  background: #333;
+  position: absolute;
+  left: -670%;
+  top: 30%;
+  transform: translateY(-50%);
+  z-index: 20;
+  box-shadow: -5px 7px 0 0 #222; /* Gölgeleme efekti */
+  animation: handleMove 23s ease-in-out 2s infinite; /* Kolu hareket ettiren animasyon */
+}
+
+/* Kolun alt kısmı */
+.wrap .player > div .handle:before {
+  width: 10%;
+  height: 130%;
+  content: " ";
+  display: block;
+  background: #111;
+  position: absolute;
+  left: -10%;
+  box-shadow: 0 3px 0 0 #888; /* Gölgeleme efekti */
+}
+
+/* Diskin dönme animasyonu */
+@keyframes rotateDisc {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg); /* Başlangıçtaki konum */
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(1080deg); /* 1080 derece döner */
+  }
+}
+
+/* Kolu hareket ettiren animasyon */
+@keyframes handleMove {
+  0% {
+    transform: translateY(-50%);
+  }
+  20% {
+    transform: translateY(-400%) translateZ(10px) rotate(30deg) translateX(20px); /* Hareketli kolun ilk kısmı */
+  }
+  80% {
+    transform: translateY(-400%) translateZ(10px) rotate(30deg) translateX(20px); /* Hareketli kolun ikinci kısmı */
+  }
+  100% {
+    transform: translateY(-50%); /* Kolu başlangıç konumuna döndürür */
+  }
+}
